@@ -1,0 +1,47 @@
+两个列表的最小索引总和
+
+假设Andy和Doris想在晚餐时选择一家餐厅，并且他们都有一个表示最喜爱餐厅的列表，每个餐厅的名字用字符串表示。
+
+你需要帮助他们用最少的索引和找出他们共同喜爱的餐厅。 如果答案不止一个，则输出所有答案并且不考虑顺序。 你可以假设总是存在一个答案。
+
+示例 1:
+
+输入:
+["Shogun", "Tapioca Express", "Burger King", "KFC"]
+["Piatti", "The Grill at Torrey Pines", "Hungry Hunter Steakhouse", "Shogun"]
+输出: ["Shogun"]
+解释: 他们唯一共同喜爱的餐厅是“Shogun”。
+示例 2:
+
+输入:
+["Shogun", "Tapioca Express", "Burger King", "KFC"]
+["KFC", "Shogun", "Burger King"]
+输出: ["Shogun"]
+解释: 他们共同喜爱且具有最小索引和的餐厅是“Shogun”，它有最小的索引和1(0+1)。
+提示:
+
+两个列表的长度范围都在 [1, 1000]内。
+两个列表中的字符串的长度将在[1，30]的范围内。
+下标从0开始，到列表的长度减1。
+两个列表都没有重复的元素。
+
+
+class Solution(object):              # 题目要求找到两个类表共有的元素，并且这个元素在两个列表中的索引之和最小
+    def findRestaurant(self, list1, list2):
+        """
+        :type list1: List[str]
+        :type list2: List[str]
+        :rtype: List[str]
+        """
+        list1 += list2            # 我把两个列表加起来，形成一个列表遍历，寻找重复元素，对于原本第二列表的元素，他的索引起始值就是m+n了
+        dictionary = {}
+        min_value = 99999999       # 定义一个大值，尽量大一些
+        for i,value in enumerate(list1):
+            if value not in dictionary:        # 元素不在字典中，就把其值作为键及其索引作为值，存入字典中
+                dictionary[value] = i
+            else:                               # 如果在字典，说明是重复元素了，可能符合我们的要求，我们的目的就是找符合要求的重复元素
+                temp = dictionary[value] + i+2000  # 因为索引在[0,m+n)范围内，为了将符合要求的重复元素索引之和 区分原有的索引[0,m+n)，因此加上2000，索引和一定大于m+n
+                dictionary[value] = temp
+                if temp>2000 and temp < min_value:     # 加上2000的目的就是最后这条return，他是根据索引之和来取出符合要求的键的
+                    min_value = temp
+        return [x for x,y in dictionary.items() if y == min_value]
