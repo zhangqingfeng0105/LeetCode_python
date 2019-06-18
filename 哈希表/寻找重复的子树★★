@@ -1,0 +1,67 @@
+寻找重复的子树
+
+
+给定一棵二叉树，返回所有重复的子树。对于同一类的重复子树，你只需要返回其中任意一棵的根结点即可。
+
+两棵树重复是指它们具有相同的结构以及相同的结点值。
+
+示例 1：
+
+        1
+       / \
+      2   3
+     /   / \
+    4   2   4
+       /
+      4
+下面是两个重复的子树：
+
+      2
+     /
+    4
+和
+
+    4
+因此，你需要以列表的形式返回上述重复子树的根结点。
+
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+                       
+from collections import defaultdict
+class Solution(object):
+    def findDuplicateSubtrees(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[TreeNode]
+        """
+        if not root:
+            return []
+        def order(root):       # 定义嵌套函数，求出先序遍历
+            orderRes=[]
+            prev=[root]
+            while prev:
+                node=prev.pop(0)
+                if node:
+                    orderRes.append(node.val)
+                    prev.extend([node.left,node.right])
+                else:
+                    orderRes.append(None)
+            return orderRes
+
+        prev=[root]
+        dic=defaultdict(TreeNode)
+        res=[]
+        while prev:                # 先序遍历得到每个节点，求节点的先序遍历存入字典中，字典的键重复，说明有重复树
+            node=prev.pop()
+            if node:
+                if tuple(order(node)) not in dic:
+                    dic[tuple(order(node))]=node
+                else:
+                    res.append(dic[tuple(order(node))])
+                prev.extend([node.left,node.right])
+        return list(set(res))
