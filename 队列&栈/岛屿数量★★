@@ -43,7 +43,7 @@ class Solution(object):
         new_grid = [["0" for i in range(w + 2)]]         # 把外圈加上一圈0
         for g in grid:
             new_grid.append(["0"] + g + ["0"])
-        new_grid.append(["0" for i in range(w + 2)]
+        new_grid.append(["0" for i in range(w + 2)])
                         
         num = 0 # 记录陆地数量
          
@@ -54,12 +54,11 @@ class Solution(object):
                     num += 1
                     self.deep_search(i, j, new_grid)         
         return num
-                                      
-        def deep_search(self,i,j,grid):     # 如果当前是陆地，把当前节点标记遍历过，并分别看左右上下四个位置，递归的过程中在修改着列表
-            if grid[i][j] == "0":
-                return 
-            grid[i][j] = "0"
-            self.deep_search(i-1,j,grid)
-            self.deep_search(i,j-1,grid)
-            self.deep_search(i,j+1,grid)
-            self.deep_search(i+1,j,grid)
+    def deep_search(self,i,j,grid):     # 如果当前是陆地，把当前节点标记遍历过，并分别看左右上下四个位置
+        if grid[i][j] == "0":           # 如果是'0'水，就返回
+            return 
+        grid[i][j] = "0"               # 如果是陆地，就置为水'0'
+        self.deep_search(i-1,j,grid)
+        self.deep_search(i,j-1,grid)
+        self.deep_search(i,j+1,grid)
+        self.deep_search(i+1,j,grid)
