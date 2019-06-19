@@ -1,0 +1,106 @@
+有效的括号
+
+给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串，判断字符串是否有效。
+
+有效字符串需满足：
+
+左括号必须用相同类型的右括号闭合。
+左括号必须以正确的顺序闭合。
+注意空字符串可被认为是有效字符串。
+
+示例 1:
+
+输入: "()"
+输出: true
+示例 2:
+
+输入: "()[]{}"
+输出: true
+示例 3:
+
+输入: "(]"
+输出: false
+示例 4:
+
+输入: "([)]"
+输出: false
+示例 5:
+
+输入: "{[]}"
+输出: true
+
+
+class Solution(object):
+    def isValid(self, s):                  # 法一
+        """
+        :type s: str
+        :rtype: bool
+        """
+        s_len = len(s)
+        if s_len == 0:
+            return True
+        if s_len % 2 == 1:
+            return False
+        dictionary = {')':'(', '}':'{', ']':'['}
+        stack = []
+        for elem in s:
+            if elem in dictionary:
+                topElem = stack.pop() if stack else '#'
+                if topElem != dictionary[elem]:
+                    return False
+            else:
+                stack.append(elem)
+        return not stack
+    
+    
+#     def isValid(self, s):                  # 法二，超时
+#         """
+#         :type s: str
+#         :rtype: bool
+#         """
+#         s = list(s)
+#         s_len = len(s)
+#         if s_len == 0:
+#             return True
+#         if s_len % 2 != 0:
+#             return False
+#         standard_symbol = ('()','{}','[]')
+#         return self.recursiveFunc(s,standard_symbol,s_len)
+
+#     def recursiveFunc(self,s,standard_symbol,s_len):
+#         i,is_change = 0,False
+#         while True:
+#             if i+1 > s_len - 1:
+#                 break
+#             if (s[i] + s[i+1]) in standard_symbol:
+#                 s.pop(i+1)
+#                 s.pop(i)
+#                 s_len -= 2
+#                 is_change = True
+#                 continue
+#             i += 1
+#         if s_len == 0:
+#             return True
+#         if is_change is False:
+#             return False
+#         return self.recursiveFunc(s,standard_symbol,s_len)
+
+
+#     def isValid(self, s):              # 法三
+#         """
+#         :type s: str
+#         :rtype: bool
+#         """    
+#         s_len = len(s)
+#         if s_len == 0:
+#             return True
+#         if s_len % 2 == 1:
+#             return False
+#         count = 0
+#         while count<s_len//2:
+#             s = s.replace('()','').replace('{}','').replace('[]','')
+#             count += 1
+#         if len(s)>0:
+#             return False
+#         else:
+#             return True
