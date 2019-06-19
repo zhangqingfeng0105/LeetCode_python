@@ -1,0 +1,65 @@
+ 岛屿数量
+ 
+ 给定一个由 '1'（陆地）和 '0'（水）组成的的二维网格，计算岛屿的数量。一个岛被水包围，并且它是通过水平方向或垂直方向上相邻的陆地连接而成的。你可以假设网格的四个边均被水包围。
+
+示例 1:
+
+输入:
+11110
+11010
+11000
+00000
+
+输出: 1
+示例 2:
+
+输入:
+11000
+11000
+00100
+00011
+
+输出: 3
+
+注意：程序中输入的表格为二维列表，且每个列表中的1或0是字符格式，如示例1的输入为：
+
+grid = [['1','1','1','1','0'],
+        ['1','1','0','1','0'],
+        ['1','1','0','0','0'],
+        ['0','0','0','0','0']]
+        
+        
+class Solution(object):
+    def numIslands(self, grid):     # 思路是：把表格外加一圈0，从(1,1)开始遍历到右下角
+                       # 每次遍历一个元素，如果是陆地，进行下列操作：先把它置为水‘0’,递归遍历它的上下左右，如果是水'0'，就返回，不是水就置为水'0'
+                                    # 这样其实就是把 与这块陆地相连的其他陆地都置为水'0'，相当于一块陆地合成了一个点
+        """                         
+        :type grid: List[List[str]]
+        :rtype: int
+        """
+        if not grid:            # 空表格
+            return 0
+        w, h = len(grid[0]), len(grid)
+        new_grid = [["0" for i in range(w + 2)]]         # 把外圈加上一圈0
+        for g in grid:
+            new_grid.append(["0"] + g + ["0"])
+        new_grid.append(["0" for i in range(w + 2)]
+                        
+        num = 0 # 记录陆地数量
+         
+         # 遍历除了周围的"0" 中间的部分
+        for i in range(1, h+1):
+            for j in range(1, w+1):
+                if new_grid[i][j] == "1":   # 如果是陆地 就进入深度遍历
+                    num += 1
+                    self.deep_search(i, j, new_grid)         
+        return num
+                                      
+        def deep_search(self,i,j,grid):     # 如果当前是陆地，把当前节点标记遍历过，并分别看左右上下四个位置，递归的过程中在修改着列表
+            if grid[i][j] == "0":
+                return 
+            grid[i][j] = "0"
+            self.deep_search(i-1,j,grid)
+            self.deep_search(i,j-1,grid)
+            self.deep_search(i,j+1,grid)
+            self.deep_search(i+1,j,grid)
