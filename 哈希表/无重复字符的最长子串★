@@ -45,7 +45,4 @@ class Solution(object):
                     del dictionary[item]
                 dictionary[i] = index
                 set_origin.append(i)
-        if max_value > len(dictionary):
-            return max_value
-        else:
-            return len(dictionary)
+            return max(len(dictionary),max_value)
