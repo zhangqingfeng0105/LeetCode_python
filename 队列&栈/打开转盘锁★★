@@ -61,8 +61,8 @@ class Solution(object):   # 采用广度优先遍历，这个四位数可以变�
                 for j in [1, -1]:
                     next_node = node[:i] + str((int(node[i]) + j) % 10) + node[i + 1:]   # 制作这八种可能性，其中 -1%10 等于9
 
-                    if next_node not in deadends: #新的点可以走而且没走过
-                        deadends.add(next_node) #避免重复
+                    if next_node not in deadends:       #新的点可以走而且没走过
+                        deadends.add(next_node)         #避免重复
                         queue.append([next_node, cnt + 1])
 
         return -1
