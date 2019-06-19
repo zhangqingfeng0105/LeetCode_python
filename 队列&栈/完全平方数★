@@ -1,0 +1,46 @@
+完全平方数
+
+给定正整数 n，找到若干个完全平方数（比如 1, 4, 9, 16, ...）使得它们的和等于 n。你需要让组成和的完全平方数的个数最少。
+
+示例 1:
+
+输入: n = 12
+输出: 3 
+解释: 12 = 4 + 4 + 4.
+示例 2:
+
+输入: n = 13
+输出: 2
+解释: 13 = 4 + 9.
+
+
+思路是：广度优先遍历
+            12                       ---------第1层
+        9/  |4    \1
+        3   8       11               ---------第2层
+     1/  4/  \1  9/ |4 \1
+     2   4    7   2 7   10           ---------第3层
+   1/  4/ \1
+   1   0                            --------- 第4层
+
+ 任何一个数都可以用多个完全平方数的和来表示，采用试凑的原则，当给定数值为12时，使用3去试凑(如果用4的话就超了),差为12-3*3=3，再用2去试凑，差为12-2*2=4，
+ 再用1去试凑，差为12-1*1=11，然后把这三个差值依次存入队列中，做法如同广度优先遍历。
+ 
+  
+from collections import deque
+from math import sqrt
+class Solution(object):
+    def numSquares(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        queue = deque()     # 定义一个队列
+        queue.append([n,1])
+        while queue:
+            diff_value,cnt = queue.popleft()
+            for i in range(int(sqrt(diff_value)),0,-1):  # 将这个数做开方，从大到小开始取，比如给定12，开方取整为3,
+                if (diff_value - i*i) == 0:
+                    return cnt
+                queue.append([diff_value - i*i,cnt+1])
+        
