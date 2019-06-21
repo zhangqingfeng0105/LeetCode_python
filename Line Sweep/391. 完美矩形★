@@ -4,8 +4,6 @@
 
 每个矩形用左下角的点和右上角的点的坐标来表示。例如， 一个单位正方形可以表示为 [1,1,2,2]。 ( 左下角的点的坐标为 (1, 1) 以及右上角的点的坐标为 (2, 2) )。
 
-
-
 示例 1:
 
 rectangles = [
@@ -78,9 +76,9 @@ class Solution(object):
         :rtype: bool
         """
 
-        left_low = sorted(rectangles,key= (lambda x:[x[0],x[1]]))[0][:2]
-        right_up = sorted(rectangles,key= (lambda x:[x[2],x[3]]),reverse=True)[0][2:]
-        area_sum = self.calcArea(left_low,right_up)
+        left_low = sorted(rectangles,key= (lambda x:[x[0],x[1]]))[0][:2]   # 使用sorted找到左下角顶点，使用lambda表达式来找
+        right_up = sorted(rectangles,key= (lambda x:[x[2],x[3]]),reverse=True)[0][2:]   # 找到右上角顶点
+        area_sum = self.calcArea(left_low,right_up)  # 计算 理论总面积
         real_area_sum = 0
         dic = {}
         for i,v in enumerate(rectangles):
@@ -88,21 +86,19 @@ class Solution(object):
             dic[tuple(v[2:])] = dic.get(tuple(v[2:]),0) + 1
             dic[tuple(v[2:3]+v[1:2])] = dic.get(tuple(v[2:3]+v[1:2]),0) + 1
             dic[tuple(v[:1]+v[3:])] = dic.get(tuple(v[:1]+v[3:]),0) + 1
-            real_area_sum += self.calcArea(v[:2],v[2:])
-        if area_sum != real_area_sum or len([e for e,f in dic.items() if f%2 == 1 and f != 1])!=0:
+            real_area_sum += self.calcArea(v[:2],v[2:])        # 把小方块加起来，计算真是面积
+        if area_sum != real_area_sum or len([e for e,f in dic.items() if f%2 == 1 and f != 1])!=0: # 如果面积不相等或者有的点出现奇数次
+            return False                                                  # 返回不是完美矩阵
+        temp_list = [list(e) for e,f in dic.items() if f == 1]   # 把出现过一次的顶点拿出来
+        if len(temp_list) != 4:                                  # 如果正好是四个并且是我们的左上，左下，右上，右下，那么就是完美矩阵
             return False
-        from functools import reduce
-        temp_list = [list(e) for e,f in dic.items() if f == 1]
-        if len(temp_list) != 4:
-            return False
-        theory_left_up = left_low[:1]+right_up[1:]
-        theory_right_low = right_up[:1]+left_low[1:]
-
+        theory_left_up = left_low[:1]+right_up[1:]        # 由左下，右上构造出理论左上
+        theory_right_low = right_up[:1]+left_low[1:]      # 由左下，右上构造出理论右下
         if left_low in temp_list and right_up in temp_list and theory_left_up in temp_list and theory_right_low in temp_list:
             return True
         else:
             return False
         return False
 
-    def calcArea(self,l1,l2):
+    def calcArea(self,l1,l2):             # 计算面积的函数
         return (l2[0] - l1[0]) * (l2[1]-l1[1])
