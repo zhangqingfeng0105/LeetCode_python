@@ -1,0 +1,33 @@
+322. 零钱兑换
+
+给定不同面额的硬币 coins 和一个总金额 amount。编写一个函数来计算可以凑成总金额所需的最少的硬币个数。如果没有任何一种硬币组合能组成总金额，返回 -1。
+
+示例 1:
+
+输入: coins = [1, 2, 5], amount = 11
+输出: 3 
+解释: 11 = 5 + 5 + 1
+示例 2:
+
+输入: coins = [2], amount = 3
+输出: -1
+
+思路：
+dp[i] 表示金额i最少需要用的硬币数。coins[j]为每个硬币的面值。我们可以不断的提高金额i的值，来推出i= amount时，需要的最少硬币数dp[amount]。
+如示例1：硬币共3种，其字面值分别是：1，2，5，而dp[i]（i>5）与dp[i-1]有关，因为dp[i-1]再加上一张1块钱硬币就得到金额i;dp[i]还与dp[i-2]有关，
+因为dp[i-2]再加上一张2元硬币就是dp[i]；dp[i]还与dp[i-5]有关，因为dp[i-5]再加上一张5元硬币，就是dp[i]。
+因此，首先创建一个大小为amount的一维列表，对列表进行初始化,当位置m(m属于i)= coins[j]时，置为1，否则置为无穷大。对于不属于coins的金额i，可建立
+状态转换方程dp[i] = min(dp[i-coins[j]]+1,dp[i])
+
+from math import inf
+class Solution:
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        if amount == 0:
+            return 0
+        dp = [inf if i not in coins else 1 for i in range(amount+1)]
+        for i in range(amount+1):
+            if i not in coins:
+                for j in coins:
+                    if i - j>0:
+                        dp[i] = min(dp[i-j]+1,dp[i])
+        return dp[amount] if dp[amount] != inf else -1
