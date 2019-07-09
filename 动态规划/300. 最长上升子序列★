@@ -1,0 +1,77 @@
+300. 最长上升子序列
+
+给定一个无序的整数数组，找到其中最长上升子序列的长度。
+
+示例:
+
+输入: [10,9,2,5,3,7,101,18]
+输出: 4 
+解释: 最长的上升子序列是 [2,3,7,101]，它的长度是 4。
+
+思路：
+nums = [10,9,2,5,3,7,101,18]
+法1： dp[i] 是以nums[i]为结尾的最大子串的长度,比如，
+当i=0时，以nums[0]=10为结尾的最大上升子序列就是[10]；
+以nums[1]=9为结尾的最大上升子序列是[9]；
+以nums[2]=2为结尾的最大上升子序列是[2]；
+以nums[3]=5为结尾的最大上升子序列是[2,5]；
+以nums[4]=3为最大上升子序列是[2,3]；
+以nums[5]=7为最大上升子序列是[2,3,7]，或[2,5,7]，
+以nums[6]=101为结尾的最大上升子序列是[2,3,7,101]或[2,5,7,101]；
+以nums[7]=18为结尾的最大上升子序列[2,3,7,18]或者[2,5,7,18]；
+因此，只要拿到的nums[i]比以前子串的最后一个元素大，那么他就可以添加到那个子串后面，长度+1；比如nums[7]=18；18大于子序列[10],[9],[2,5],[2,3]
+[2,3,7],[2,5,7]，所以把18添加到子序列就可以了，还要筛选出最长的子序列，因此最后为[2,3,7,18]或者[2,5,7,18]，最终把最大长度返回。
+
+法二：
+设置一个类似栈的容器，他保存的是元素个数为i个时的最优解。只有比当前栈顶元素大的元素，才能压入栈，因此栈顶元素就是最大的元素，而小于栈顶的元素，此时遍历栈内的元素，当发现当前元素
+nums[i]小于等于栈内元素时，替换并跳出循环，比如栈内此时有三个元素[2,6,8]，此时元素5来了，那么他比栈顶元素8小，因此不可以后面压入栈，此时遍历栈内
+元素，发现6>5,因此把元素6替换为5，形成[2,5,8]，栈就是维护一个最优结尾的子序列，比如i=3，那么stack栈有三个元素[2,6,8],但是[2,5,8]更优
+
+法三：
+他是法二的优化，因为寻找一个值可以用二分法来找
+
+from bisect import bisect_left
+class Solution(object):
+    def lengthOfLIS(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        # if len(nums) == 0:          # 法1 以nums[i]为结尾的最大子串和其长度
+        #     return 0
+        # dp = [0 for i in range(len(nums))]
+        # dp[0] = 1
+        # LIS = 1
+        # for i in range(1,len(nums)):
+        #     dp[i] = 1
+        #     for j in range(i):
+        #         if nums[i] > nums[j]  and (dp[i] < dp[j] +1):
+        #             dp[i] = dp[j] + 1
+        #     if LIS < dp[i]:
+        #         LIS = dp[i]
+        # print(dp)
+        # return LIS
+        
+        # if len(nums) == 0:             # 法2
+        #     return 0
+        # stack = [nums[0]]
+        # for i in range(1,len(nums)):
+        #     if nums[i] > stack[-1]:
+        #         stack.append(nums[i])
+        #     else:
+        #         for j in range(0,len(stack)):
+        #             if stack[j] >= nums[i]:
+        #                 stack[j] = nums[i]
+        #                 break
+        # return len(stack)
+        
+        if len(nums) == 0:         # 法3 
+            return 0
+        stack = [nums[0]]
+        for i in range(1,len(nums)):
+            if nums[i] > stack[-1]:
+                stack.append(nums[i])
+            else:
+                index = bisect_left(stack,nums[i])    # 使用二分查找
+                stack[index] = nums[i]
+        return len(stack)   
