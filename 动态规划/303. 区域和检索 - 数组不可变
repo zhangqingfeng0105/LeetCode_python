@@ -1,0 +1,78 @@
+303. 区域和检索 - 数组不可变
+
+给定一个整数数组  nums，求出数组从索引 i 到 j  (i ≤ j) 范围内元素的总和，包含 i,  j 两点。
+
+示例：
+
+给定 nums = [-2, 0, 3, -5, 2, -1]，求和函数为 sumRange()
+
+sumRange(0, 2) -> 1
+sumRange(2, 5) -> -1
+sumRange(0, 5) -> -3
+说明:
+
+你可以假设数组不可变。
+会多次调用 sumRange 方法
+
+思路：
+     线段树
+
+class NumArray(object):
+
+    def __init__(self, nums):
+        """
+        :type nums: List[int]
+        """
+        if len(nums) == 0:
+            return None
+        self.num = nums
+        self.tree = [None for i in range(len(nums)*4)]
+        self.build_line_segment_tree(nums,self.tree,0,0,len(nums)-1)
+
+    def sumRange(self, i, j):
+        """
+        :type i: int
+        :type j: int
+        :rtype: int
+        """
+        return self.query_tree(self.num,self.tree,0,0,len(self.num)-1,i,j)
+        
+    def build_line_segment_tree(self,arr,tree,node,start,end):        # 建树
+        if start == end:
+            tree[node] = arr[start]
+            return
+        mid = (start+end) // 2
+        left_node = 2* node + 1 
+        right_node = 2*node +2
+        self.build_line_segment_tree(arr,tree,left_node,start,mid)
+        self.build_line_segment_tree(arr,tree,right_node,mid+1,end)
+        tree[node] = tree[left_node] + tree[right_node]
+        
+    def query_tree(self,arr,tree,node,start,end,L,R):         # 查询树
+        if R<start or L>end:
+            return 0
+        elif L <= start and R>=end:
+            return tree[node]
+        elif start == end:
+            return tree[node]
+        
+        mid = (start + end)//2
+        left_node = node * 2 +1
+        right_node = node *2 +2
+        sum_left = self.query_tree(arr,tree,left_node,start,mid,L,R)
+        sum_right = self.query_tree(arr,tree,right_node,mid+1,end,L,R)
+        return sum_left + sum_right
+        
+    def update_tree(self,arr,tree,node,start,end,index,value):       # 更新线段树
+        if start == end:
+            arr[index] = value
+            tree[node] = value
+            return
+        mid = (start + end) //2
+        left_node = 2 * node + 1
+        right_node = 2 * node +2
+        if index >= start and index <= mid:
+            self.update_tree(arr,tree,left_node,start,mid,index,value)
+        else:
+            self.update_tree(arr,tree,right_node,mid+1,end,index,value)
+        tree[node] = tree[left_node] + tree[right_node]
