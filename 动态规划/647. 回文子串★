@@ -1,0 +1,53 @@
+647. 回文子串
+
+给定一个字符串，你的任务是计算这个字符串中有多少个回文子串。
+
+具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被计为是不同的子串。
+
+示例 1:
+
+输入: "abc"
+输出: 3
+解释: 三个回文子串: "a", "b", "c".
+示例 2:
+
+输入: "aaa"
+输出: 6
+说明: 6个回文子串: "a", "a", "a", "aa", "aa", "aaa"
+
+
+★回文串是：正着读和倒着读都是一样的
+
+class Solution(object):
+    def countSubstrings(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        # n = len(s)          # 法1-------------
+        # dp = [[0] * n for _ in range(n)]
+        # res = 0
+        # for i in range(n):
+        #     for j in range(i, -1, -1):
+        #         if s[i] == s[j] and (i - j + 1 <= 2 or dp[i - 1][j + 1]):
+        #             #print(i,j)
+        #             dp[i][j] = 1
+        #         if dp[i][j]:res += 1
+        # return res
+        
+        
+        self.res = 0          # 法2 --------------
+        size = len(s)
+        for i in range(size):
+            self.helper(s,size,i,i)
+            self.helper(s,size,i,i+1)
+        return self.res
+        
+    def helper(self,s,size,i,j):
+        while i >=0 and j<size and s[i] == s[j]:
+            self.res += 1
+            i -= 1
+            j += 1
+            
+        
+        
