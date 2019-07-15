@@ -1,0 +1,29 @@
+背包问题 Ⅲ
+
+给定N个正整数，A0,A1,...AN-1，一个正整数target，问有多少种组合加起来拼出target，每个Ai可以用无数次。
+
+示例：
+
+A= [1,2,4]， target = 4，
+输出 6(1+1+1+1=4和4和1+1+2=4和2+2=4和1+2+1=4和2+1+1=6，共6种)
+
+★ 思路：---------------
+
+跟凑硬币问题很像
+
+class Solution:
+    '''
+    num:存放每件商品重量的列表
+    target:目标总量，int正整数
+    '''
+    def backPack(self,num,target):
+        n = len(num)
+        if n == 0:
+            return 0
+        dp = [0 for j in range(target+1)]
+        dp[0] = 1
+        for i in range(1,target+1):
+            for j in range(0,n):
+                if i >= num[j]:
+                    dp[i] += dp[i-num[j]]
+        return dp[target]
