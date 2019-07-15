@@ -1,0 +1,43 @@
+132. 分割回文串 II
+
+给定一个字符串 s，将 s 分割成一些子串，使每个子串都是回文串。
+
+返回符合要求的最少分割次数。
+
+示例:
+
+输入: "aab"
+输出: 1
+解释: 进行一次分割就可将 s 分割成 ["aa","b"] 这样两个回文子串。
+
+★思路：
+   使用helper函数求出回文子串的位置，
+
+class Solution(object):
+    def minCut(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        n = len(s)
+        if n == 0:
+            return 0
+        isPlain = [[False for i in range(n)] for j in range(n)]
+        
+        def helper(i,j,is_plain,s,n):
+            while i>=0 and j <n and s[i] == s[j]:
+                is_plain[i][j] = True
+                i -= 1
+                j += 1
+        
+        for t in range(n):
+            helper(t,t,isPlain,s,n)         #奇数回文子串寻找
+            helper(t,t+1,isPlain,s,n)       # 偶数回文子串寻找
+                        
+        dp = [float('inf') for _ in range(n+1)]
+        dp[0] = 0
+        for i in range(1,n+1):
+            for j in range(i):
+                if isPlain[j][i-1]:
+                    dp[i] = min(dp[j]+1,dp[i])
+        return dp[n]-1           
