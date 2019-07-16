@@ -1,4 +1,4 @@
-★ 5. 最长回文子串
+5. 最长回文子串
 
 给定一个字符串 s，找到 s 中最长的回文子串。你可以假设 s 的最大长度为 1000。
 
@@ -12,10 +12,44 @@
 输入: "cbbd"
 输出: "bb"
 
-★ 思路： --------------------------
+★ 思路 ---------------------
 
 f[i][j] 为s[i,..j]最长的回文子串长度
      f[i][j]   =   max(   f[i+1][j],   f[i][j-1],   f[i+1][j-1] + 2 | s[i]=s[j])
 s[i,..j]最长的回文子串长度   s[i+1,..j]最长的回文子串长度  s[i,..j-1]最长的回文子串长度   s[i+1,..j-1]最长的回文子串长度加上s[i]和s[j]
+
+★ 思路：-------------------------------------
+
+没有用dp思想
+
+class Solution(object):
+    def longestPalindrome(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        n = len(s)
+        if n == 0:
+            return s
+
+        def helper(s,i,j):        # 寻找回文子串
+            while i >= 0 and j < n and s[i] == s[j]:
+                i -= 1
+                j += 1
+            return j-i-1,i+1,j-1    # 记录长度以及起始和终止下标
+        
+        max_value = 0     # 保存长度最大值的临时表量
+        start,end = -1,-1  # 保存长度最大值时的起始下标
+        
+        for i in range(n):           # 遍历字符串
+            count1,i1,i2 = helper(s,i,i)
+            if count1 >= max_value:
+                max_value = count1
+                start,end = i1,i2
+            count2,i11,i22 = helper(s,i,i+1)
+            if count2 >= max_value:
+                max_value = count2
+                start,end = i11,i22
+        return s[start:end+1]
 
 
