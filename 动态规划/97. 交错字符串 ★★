@@ -1,0 +1,50 @@
+ ★★ 97. 交错字符串
+
+给定三个字符串 s1, s2, s3, 验证 s3 是否是由 s1 和 s2 交错组成的。
+
+示例 1:
+
+输入: s1 = "aabcc", s2 = "dbbca", s3 = "aadbbcbcac"
+输出: true
+示例 2:
+
+输入: s1 = "aabcc", s2 = "dbbca", s3 = "aadbbbaccc"
+输出: false
+
+ ★★ 思路：--------------------------------------
+ 
+ 假设s3是由s1和s2交错形成，那么s3的长度等于s1的长度加上s2的长度，在最后一步，s3的最后一个字符s3[m+n-1]分为两种情况：
+ (1) 要么是s1[m-1]， 那么s3[0,m+n-2]是由s1[0,m-2] 和 s2[0,n-1]拼出
+ (2) 要么是s2[n-1]， 那么s3[0,m+n-2]是由s1[0,m-1] 和 s2[0,n-2]拼出
+ 
+设 f[i][j] 是s3前i+j个字符是否由s1的前i个字符s1[0,i-1] 和 s2 前j个字符s2[0,j-1]拼出
+
+转移方程：
+
+       f[i][j] = (f[i-1][j] and a3[i+j-1] == s1[i-1])   or  (f[i][j-1] and a3[i+j-1] == s2[j-1])
+f[i][j] 是s3前i+j个字符是否由s1的前i个字符和 s2 前j个字符拼出 
+ 
+ 
+ class Solution(object):
+    def isInterleave(self, s1, s2, s3):
+        """
+        :type s1: str
+        :type s2: str
+        :type s3: str
+        :rtype: bool
+        """
+        s1_len,s2_len,s3_len = len(s1),len(s2),len(s3)
+        
+        if s3_len != (s1_len + s2_len):
+            return False
+        f = [[False for i in range(s2_len+1)] for j in range(s1_len+1)]
+        for i in range(s1_len+1):
+            for j in range(s2_len+1):
+                if i == 0 and j== 0:
+                    f[i][j] = True
+                    continue
+                if i > 0 and (s3[i+j-1] == s1[i-1]):            # 分为两种情况，这是情况一
+                    f[i][j] |= f[i-1][j]            # 或等于
+                if j > 0 and (s3[i+j-1] == s2[j-1]):             # 这是情况二
+                    f[i][j] |= f[i][j-1]
+        return f[s1_len][s2_len]
