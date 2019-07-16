@@ -1,0 +1,65 @@
+★★ 72. 编辑距离
+
+
+给定两个单词 word1 和 word2，计算出将 word1 转换成 word2 所使用的最少操作数 。
+
+你可以对一个单词进行如下三种操作：
+
+插入一个字符
+删除一个字符
+替换一个字符
+示例 1:
+
+输入: word1 = "horse", word2 = "ros"
+输出: 3
+解释: 
+horse -> rorse (将 'h' 替换为 'r')
+rorse -> rose (删除 'r')
+rose -> ros (删除 'e')
+示例 2:
+
+输入: word1 = "intention", word2 = "execution"
+输出: 5
+解释: 
+intention -> inention (删除 't')
+inention -> enention (将 'i' 替换为 'e')
+enention -> exention (将 'n' 替换为 'x')
+exention -> exection (将 'n' 替换为 'c')
+exection -> execution (插入 'u')
+
+★★ 思路：-------------------------------------------------
+
+f[i][j] 为A的前i个字符A[0,..i-1] 和 B前j个字符B[0,..j-1]的最小编辑距离
+
+要求 f[m][n]
+
+       f[i][j] =  min( f[i][j-1]+1,      f[i-1][j-1]+1,         f[i-1][j]+1,        f[i-1][j-1]且A[i-1]=B[j-1])
+             情况一，A在最后插入B[j-1]     二，A最后一个字符替换成B[j-1]   三，A删掉最后一个字符        四，A和B最后一个字符相等
+         解释：例如情况三，A删掉末尾就是B，那么我只需要关系怎么把A的前m-1个字符A[0,..m-2] 变成 B的前n个字符B[0,..n-1]
+         
+class Solution(object):
+    def minDistance(self, word1, word2):
+        """
+        :type word1: str
+        :type word2: str
+        :rtype: int
+        """
+        m,n = len(word1),len(word2)
+        f = [[0 for j in range(n+1)] for i in range(m+1)]
+        for i in range(m+1):
+            for j in range(n+1):
+                if i == 0:         # 如果串A是空串，那么操作距离就是B的串的大小
+                    f[i][j] = j
+                    continue
+                if j == 0:          # 如果B是空串，操作距离就是A的串的大小
+                    f[i][j] = i
+                    continue
+                    
+                            # 删             加
+                f[i][j] = min(f[i-1][j]+1,f[i][j-1]+1)
+                                        # 替换
+                f[i][j] = min(f[i][j], f[i-1][j-1]+1)
+                if word1[i-1] == word2[j-1]:  # 等于
+                    f[i][j] = min(f[i][j], f[i-1][j-1])
+                    
+        return f[m][n]
