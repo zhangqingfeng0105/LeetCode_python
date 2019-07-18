@@ -1,0 +1,90 @@
+★★  K Sum 
+
+给定数组A，包含n个互不相等的正整数，问有多少种方式从中找出K个数，使得他们的和是Target。
+
+示例1：
+
+输入： A = [1,2,3,4]  K=2，Target = 5
+输出： 2（1+4=5,2+3=5）
+
+★★ 思路：---------------------------------------
+
+背包问题：
+数组A是每个物品的重量，  Target看做背包的最大承重
+
+最后一步，最后一个数A(n-1) 是否选入这K个数
+
+情况一: （A(n-1)不被选入）：需要在前n-1个数中选K个数，使得他们的和是Target
+
+情况二： （A(n-1) 选入）： 需要前n-1个数中选K-1个数，使得他们的和是Target-A(n-1)
+
+要知道还有几个数可以选，以及他们的和是多少，序列加状态
+
+状态方程：
+
+  f[i][k][s] 表示有多少种方法可以再前i个数中选出k个，使得他们的和是s
+  
+  f[i][k][s]  =      f[i-1][k][s]             +                  f[i-1][k-1][s-A(i-1)] | s>=A(i-1)
+           有多少种方法可以再前i-1个数中选出k个，使得他们的和是s      有多少种方法可以再前i-1个数中选出k-1个，使得他们的和是s-A(i-1)
+                情况一                                                         情况二
+  
+初始条件：
+f[0][0][0]=1  前0个数选出0个使和为0，有1 种方法
+f[0][0][s]=0  s=1,2,..Target  前0个数选出0ge使和为s，有0种方法
+
+答案：
+f[N][K][Target]
+
+
+class Solution():
+    def kSum(self,A,K,target):
+        '''
+        :param A: 有n个不同的正整数组成的列表
+        :param K: 选出K个数，使这个K个数的和为target
+        :param target:  目标和就是target
+        :return: 有多少种方式从A中选出K个数，使这个K个数的和为target
+        '''
+        n = len(A)
+        f = [[[0 for o in range(target+1)] for p in range(K+1)] for q in range(n+1)]
+        for k in range(K+1):     # 让 f[0][0~K][0~target]=0 从前0个数选出0个使和为target有0种方式，后面会把f[0][0][0]=1
+            for s in range(target+1):
+                f[0][k][s] = 0
+        f[0][0][0] = 1
+
+        # dp
+        for i in range(1,n+1):
+            for k in range(K+1):
+                for s in range(target+1):
+                    f[i][k][s] = f[i-1][k][s]
+                    if k >= 1 and s>=A[i-1]:      # 这里注意
+                        f[i][k][s] += f[i-1][k-1][s-A[i-1]]
+        return f[n][K][target]
+        
+ # ----------------------------可以改成滚动数组，节约空间--------------------------------------
+ 
+ class Solution():
+    def kSum(self,A,K,target):
+        '''
+        :param A: 有n个不同的正整数组成的列表
+        :param K: 选出K个数，使这个K个数的和为target
+        :param target:  目标和就是target
+        :return: 有多少种方式从A中选出K个数，使这个K个数的和为target
+        '''
+        now = 0
+        n = len(A)
+        f = [[[0 for o in range(target+1)] for p in range(K+1)] for q in range(n+1)]
+        for k in range(K+1):     # 让 f[0][0~K][0~target]=0 从前0个数选出0个使和为target有0种方式，后面会把f[0][0][0]=1
+            for s in range(target+1):
+                f[now][k][s] = 0
+        f[now][0][0] = 1
+
+        # dp
+        for i in range(1,n+1):
+            old = now
+            now = 1- now
+            for k in range(K+1):
+                for s in range(target+1):
+                    f[now][k][s] = f[old][k][s]
+                    if k >= 1 and s>=A[i-1]:
+                        f[now][k][s] += f[old][k-1][s-A[i-1]]
+        return f[now][K][target]
