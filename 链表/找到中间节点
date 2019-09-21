@@ -1,0 +1,13 @@
+链表找到中间节点
+
+思路：双指针，一个速度是2,一个速度是1,速度是2的到达终点时，速度1的到达中间
+
+def find_middle(l):
+    assert l.head is not None and l.head.next is not None
+    head = l.head
+    fast = head
+    slow = head.next
+    while fast is not None and fast.next is not None:
+        fast = fast.next.next
+        slow = slow.next
+    return slow.value
