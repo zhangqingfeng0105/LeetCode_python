@@ -1,0 +1,20 @@
+取硬币问题
+给定几摞硬币，这些硬币相邻排列，我们要用最少的步数收集硬币，其中每一步可以沿水平线或者垂直线连续收集
+
+举例：
+输入 height = [2,1,2,5,1]
+height对应的是每摞硬币的高度，此处给了我们5摞硬币，其中第一摞有2个硬币，第二摞有1个硬币，其余一次对应。
+输出： 4
+
+思路：
+
+def minSetp(height):
+    def minStepHelper(height,left,right,h):
+        if left >= right:
+            return 0
+        m = left
+        for i in range(left,right):
+            if height[i] < height[m]:
+                m = i
+        return min(right-left,minStepHelper(height,left,m,height[m])+minStepHelper(height,m+1,right,height[m])+height[m]-h)
+    return minStepHelper(height,0,len(height),0)
