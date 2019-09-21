@@ -1,0 +1,20 @@
+找到环的起始节点
+
+def find_beginning(head):
+    if head is None:
+        return None
+    slow = head
+    fast = head
+    while fast is not None and fast.next is not None:    # 找到快点和慢点相遇的位置
+        fast = fast.next.next
+        slow = slow.next
+        if slow == fast:
+            fast = head              # 找到之后把快点赋值为有环链表的头，慢节点还在环里
+            break
+    if fast is None or fast.next is None:
+        return None
+    while fast != slow:          # 现在fast和slow都每次走一步，相遇的时候就是环的起始位置
+        fast = fast.next
+        slow = slow.next
+    return slow
+
