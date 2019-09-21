@@ -1,0 +1,29 @@
+奇偶换序问题
+
+给定2×n个元素的列表如 [a1, a2, a3,...an, b1, b2, .. bn] 排序成 [a1, b1, a2, b2, ... an, bn]
+例如：
+输入 a = [1,2,9,19]
+输出 1,9,2,15
+
+思路，采用分治法，通俗将就是分治分治分治。。。。,将列表切成两段，将中间部分交换，如 1 ，3， 5， 7， 2， 4， 6， 8 切成两段，1，3，5，7，   2，4，6，8
+第一部分继续切两段，后面部分也是如此，形成 1，3     5，7     2，4    6，8  交换中间部分，1，3   2，4   5，7   6，8，对前两个部分继续交换
+形成：  1，2，3，4，   5，7，6，8  ，后面部分按中间交换，成为：  1，2，3，4，5，6，7，8
+
+代码：
+
+def shuffleArray(a,left,right):
+    if right == left + 1:
+        return
+    mid = (left + right) // 2  # 将整体切为两半
+    temp = mid + 1
+    mmid = (left + mid ) // 2   # 敌意半继续切成两半
+    for i in range(mmid+1,mid + 1):
+        (a[i],a[temp]) = (a[temp], a[i])
+        temp += 1
+    shuffleArray(a,left,mid)
+    shuffleArray(a,mid + 1, right)
+a = [1,3,5,7,2,4,6,8]
+n = len(a)
+shuffleArray(a,0,n-1)
+for i in range(0,n):
+    print(a[i],end = ' ')
