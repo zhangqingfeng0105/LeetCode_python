@@ -1,0 +1,8 @@
+不使用加号做加法：
+
+def add_udf(a,b):
+    if b == 0:
+        return a
+    sum = a^ b            # 异或就是相加
+    carry = (a &b)<<1     # 与就是计算进位
+    return add_udf(sum,carry)
